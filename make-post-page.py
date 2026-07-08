@@ -1,9 +1,20 @@
-<!doctype html>
+# -*- coding: utf-8 -*-
+"""Generate a phone-post package page (post.html) for a given date folder.
+Usage: python make-post-page.py 2026-07-09
+Reads <date>/caption.txt, emits <date>/post.html referencing the public
+GitHub Pages image URLs. Idempotent — safe to re-run.
+"""
+import sys, json, os
+
+BASE_HOST = "https://kangbola.github.io/sweetdeo-ig-pub/"
+ROOT = os.path.dirname(os.path.abspath(__file__))
+
+TEMPLATE = r"""<!doctype html>
 <html lang="ko">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>IG 게시 패키지 · 2026-07-08</title>
+<title>IG 게시 패키지 · __DATE__</title>
 <style>
   :root{--bg:#0f1020;--card:#1a1b2e;--ink:#f4f4f8;--muted:#9aa0b4;--accent:#ff4a6e}
   *{box-sizing:border-box}
@@ -27,7 +38,7 @@
 </head>
 <body>
   <h1>📲 IG 게시 패키지</h1>
-  <div class="sub">sweet_deo · 2026-07-08 · 캐러셀 10장 + 본문</div>
+  <div class="sub">sweet_deo · __DATE__ · 캐러셀 10장 + 본문</div>
 
   <div class="step">
     <b>올리는 법 (인스타 앱)</b>
@@ -49,8 +60,8 @@
   <div class="imgs" id="imgs"></div>
 
   <script>
-    var BASE="https://kangbola.github.io/sweetdeo-ig-pub/2026-07-08/";
-    var caption="🌙 잘 자는 사람들에겐 숨은 공통점이 있어요 — 편안한 장.\n\n수면 호르몬 멜라토닌은 세로토닌에서 만들어지고, 그 세로토닌의 약 90%가 장에서 시작됩니다. 그래서 섬유질·발효식품, 가벼운 저녁, 늦은 당·카페인 줄이기가 잠에 도움이 될 수 있어요. 좋은 잠은 저녁 식탁에서 시작될지도.\n\n📌 저장해두고 밤마다 체크.\n\n—\n🌙 Good sleepers share a quiet secret: a calm gut. Melatonin comes from serotonin, and ~90% of serotonin starts in the gut. Fiber, ferments, a lighter dinner and less late sugar/caffeine can help. 📌 Save & follow @sweet_deo.\n\n#sleep #guthealth #serotonin #wellness";
+    var BASE=__BASE__;
+    var caption=__CAPTION__;
     document.getElementById('cap').value=caption;
     var wrap=document.getElementById('imgs');
     for(var i=1;i<=10;i++){
@@ -75,3 +86,25 @@
   </script>
 </body>
 </html>
+"""
+
+def main():
+    if len(sys.argv) < 2:
+        print("usage: python make-post-page.py <YYYY-MM-DD>"); sys.exit(1)
+    date = sys.argv[1]
+    folder = os.path.join(ROOT, date)
+    cap_path = os.path.join(folder, "caption.txt")
+    if not os.path.isfile(cap_path):
+        print("no caption.txt in", folder); sys.exit(1)
+    caption = open(cap_path, encoding="utf-8").read().strip()
+    base = BASE_HOST + date + "/"
+    html = (TEMPLATE
+            .replace("__DATE__", date)
+            .replace("__BASE__", json.dumps(base))
+            .replace("__CAPTION__", json.dumps(caption, ensure_ascii=False)))
+    out = os.path.join(folder, "post.html")
+    open(out, "w", encoding="utf-8").write(html)
+    print("wrote", out)
+
+if __name__ == "__main__":
+    main()
