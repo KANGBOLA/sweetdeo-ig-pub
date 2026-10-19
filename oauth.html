@@ -1,0 +1,15 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex"><title>sweetdeo 연결 코드</title>
+<style>body{font:16px/1.5 system-ui,sans-serif;max-width:640px;margin:40px auto;padding:0 16px;background:#111;color:#eee}
+code{display:block;background:#222;padding:12px;border-radius:8px;word-break:break-all;margin:8px 0}button{padding:8px 14px;border-radius:6px;border:0;background:#f37114;color:#fff;font-weight:600}</style></head>
+<body><h2>연결 코드</h2><p id="m">주소창에 code 가 없습니다.</p><code id="c"></code><button id="b" hidden>명령 복사</button>
+<p style="color:#999;font-size:13px">이 페이지는 코드를 화면에만 띄웁니다. 어디로도 전송하지 않습니다. 코드는 1회용입니다.</p>
+<script>
+const q=new URLSearchParams(location.search),code=q.get('code');
+if(code){const p=q.has('scopes')?'tiktok':'threads';
+const cmd='python social_auth.py '+p+' "'+code.replace(/#_$/,'')+'"';
+document.getElementById('m').textContent=(p==='tiktok'?'틱톡':'스레드')+' 승인 완료. 콘텐츠팩토리\brand 에서 아래 명령을 실행하세요:';
+document.getElementById('c').textContent=cmd;const b=document.getElementById('b');b.hidden=false;
+b.onclick=()=>navigator.clipboard.writeText(cmd).then(()=>b.textContent='복사됨');}
+else if(q.get('error')){document.getElementById('m').textContent='거부/오류: '+q.get('error')+' '+(q.get('error_description')||'');}
+</script></body></html>
