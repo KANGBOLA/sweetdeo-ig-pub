@@ -158,13 +158,13 @@ def audit_caption(cap: str):
     tags = re.findall(r"#[^\s#]+", text)
     ko = [t for t in tags if re.search(r"[가-힣]", t)]
     if not tags:
-        warn.append("해시태그가 없습니다 — 한국어 5 + 영어 3을 권합니다.")
+        warn.append("해시태그가 없습니다 — 한국어 3 + 영어 2(총 5개)를 권합니다.")
+    elif len(tags) > 5:
+        warn.append(f"해시태그 {len(tags)}개 — 인스타는 5개까지만 받습니다(초과분은 게시가 막힘).")
     elif not ko:
         warn.append(f"해시태그 {len(tags)}개가 전부 영어입니다 — 한국어 검색 유입이 0이 됩니다.")
-    elif not (4 <= len(ko) <= 8):
-        warn.append(f"한국어 해시태그 {len(ko)}개 — 5개 내외로 맞추세요.")
     else:
-        ok.append(f"해시태그 {len(tags)}개(한국어 {len(ko)}) — 5+3 형태에 가깝습니다.")
+        ok.append(f"해시태그 {len(tags)}개(한국어 {len(ko)}) — 상한 5개 안입니다.")
     return warn, ok
 
 
