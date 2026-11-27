@@ -29,7 +29,7 @@ curl -s -o /dev/null -w '%{http_code}\n' https://kangbola.github.io/sweetdeo-ig-
    공개 URL 200 응답까지 확인한다(`/verify-and-dryrun`).
 3. `post.html` 은 생성물이다. 손으로 고친 내용은 다시 만들면 사라진다 — 고칠 것은 `caption.txt` 쪽이다.
 4. 캡션 경고(첫 줄 125자·숫자 훅·빈 줄 문단·자사몰 CTA·해시태그 5개 상한)는 **고치지 말고 보고**한다.
-   캡션을 만드는 쪽은 `sweetdeo-carousel` 의 생성기다.
+   캡션은 별도 생산 저장소의 생성기가 만든다 — 이 저장소에서 고치지 않는다.
 
 ## 주의
 
